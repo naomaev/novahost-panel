@@ -1,0 +1,144 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#080d18">
+<title>NovaHost Panel</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;background:#080d18;color:#f5f7ff}
+header{height:65px;padding:0 20px;display:flex;align-items:center;justify-content:space-between;background:#101a2a;border-bottom:1px solid #23334b}
+.logo{font-size:23px;font-weight:900;color:#22d3ee}
+.logo span{color:white}
+.menu{display:flex;gap:8px}
+button{cursor:pointer;border:0;border-radius:8px;padding:11px 15px;font-weight:bold}
+.menu button{background:#1c2a40;color:white}
+.menu button.active{background:#22d3ee;color:#07111b}
+.layout{display:flex;min-height:calc(100vh - 65px)}
+aside{width:220px;background:#101a2a;padding:25px 15px;border-right:1px solid #23334b}
+aside h4{color:#7187a3;font-size:11px;margin:15px 10px}
+aside button{width:100%;text-align:left;background:transparent;color:#b9c9df;margin:3px 0}
+aside button:hover,aside button.selected{background:#1d3549;color:#22d3ee}
+main{padding:30px;width:100%;max-width:1200px;margin:auto}
+h1{font-size:28px}
+.subtitle{color:#91a3bc;margin:7px 0 28px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}
+.card{background:#101a2a;border:1px solid #23334b;border-radius:13px;padding:20px}
+.card small{color:#91a3bc}
+.card h2{font-size:30px;margin-top:10px;color:#22d3ee}
+.section{margin-top:30px}
+.section-title{font-size:20px;margin-bottom:15px}
+.server{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:12px}
+.server h3{font-size:16px}
+.server p{color:#91a3bc;font-size:12px;margin-top:5px}
+.status{color:#fbbf24;font-size:12px;font-weight:bold}
+.empty{color:#91a3bc;text-align:center;padding:35px}
+.page{display:none}
+.page.active{display:block}
+.action{background:#22d3ee;color:#06111c}
+.secondary{background:#26374e;color:white}
+footer{text-align:center;color:#7187a3;padding:30px;font-size:12px}
+@media(max-width:650px){
+aside{width:65px;padding:15px 5px}
+aside h4{display:none}
+aside button{font-size:0;text-align:center;padding:13px 2px}
+aside button span{font-size:19px}
+main{padding:20px 12px}
+.stats{grid-template-columns:1fr}
+.server{align-items:flex-start}
+}
+</style>
+</head>
+<body>
+
+<header>
+<div class="logo">NOVA<span>HOST</span></div>
+<div class="menu">
+<button class="active">Client</button>
+<button>Panel</button>
+</div>
+</header>
+
+<div class="layout">
+<aside>
+<h4>MENU PRINCIPAL</h4>
+<button class="selected" onclick="showPage('dashboard',this)"><span>▦</span> Tableau de bord</button>
+<button onclick="showPage('servers',this)"><span>▣</span> Mes serveurs</button>
+<button onclick="showPage('orders',this)"><span>🛒</span> Commandes</button>
+<button onclick="showPage('billing',this)"><span>€</span> Facturation</button>
+<h4>ASSISTANCE</h4>
+<button onclick="showPage('support',this)"><span>✉</span> Support</button>
+</aside>
+
+<main>
+<div id="dashboard" class="page active">
+<h1>Tableau de bord</h1>
+<p class="subtitle">Bienvenue sur NovaHost Panel.</p>
+
+<div class="stats">
+<div class="card"><small>Mes serveurs</small><h2>0</h2></div>
+<div class="card"><small>Serveurs actifs</small><h2>0</h2></div>
+<div class="card"><small>Commandes</small><h2>0</h2></div>
+</div>
+
+<div class="section">
+<h2 class="section-title">Mes serveurs</h2>
+<div class="card empty">
+<div style="font-size:35px">🖥️</div>
+<h3>Aucun serveur pour le moment</h3>
+<p>Vos futurs serveurs apparaîtront ici.</p>
+</div>
+</div>
+
+<div class="section">
+<h2 class="section-title">Actualités NovaHost</h2>
+<div class="card">
+<h3 style="color:#22d3ee">Bienvenue chez NovaHost !</h3>
+<p class="subtitle" style="margin-bottom:0">Notre plateforme est actuellement en développement.</p>
+</div>
+</div>
+</div>
+
+<div id="servers" class="page">
+<h1>Mes serveurs</h1>
+<p class="subtitle">Gérez vos serveurs de jeux.</p>
+<div class="card empty">🖥️<h3>Aucun serveur disponible</h3><p>Les serveurs seront disponibles après le lancement.</p></div>
+</div>
+
+<div id="orders" class="page">
+<h1>Commandes</h1>
+<p class="subtitle">Retrouvez vos commandes.</p>
+<div class="card empty">🛒<h3>Aucune commande</h3><p>Votre historique apparaîtra ici.</p></div>
+</div>
+
+<div id="billing" class="page">
+<h1>Facturation</h1>
+<p class="subtitle">Retrouvez vos informations de facturation.</p>
+<div class="card empty">€<h3>Aucune facture</h3><p>Vos factures apparaîtront ici.</p></div>
+</div>
+
+<div id="support" class="page">
+<h1>Assistance</h1>
+<p class="subtitle">Besoin d'aide avec NovaHost ?</p>
+<div class="card">
+<h3>Centre d'assistance</h3>
+<p class="subtitle">Notre support sera bientôt disponible.</p>
+</div>
+</div>
+
+<footer>© 2026 NovaHost — Game Server Hosting</footer>
+</main>
+</div>
+
+<script>
+function showPage(id,button){
+document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+document.getElementById(id).classList.add('active');
+document.querySelectorAll('aside button').forEach(b=>b.classList.remove('selected'));
+button.classList.add('selected');
+}
+</script>
+</body>
+</html>
