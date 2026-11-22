@@ -3,166 +3,366 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>NovaHost Panel</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *{box-sizing:border-box}
-body{margin:0;background:#080d18;color:white;font-family:Arial,sans-serif}
-.container{max-width:440px;margin:70px auto;padding:25px}
-.logo{text-align:center;font-size:32px;font-weight:900;color:#22d3ee}
+body{margin:0;background:#080d18;color:#fff;font-family:Arial,sans-serif}
+header{padding:20px;background:#101a2a;border-bottom:1px solid #263c54;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.logo{font-size:25px;font-weight:900;color:#22d3ee}
 .logo span{color:white}
-.card{background:#101a2a;padding:25px;border:1px solid #263c54;border-radius:15px;margin-top:25px}
-h2{text-align:center}
-input{width:100%;padding:14px;margin:9px 0;background:#080d18;color:white;border:1px solid #30445e;border-radius:8px}
-button{width:100%;padding:14px;background:#22d3ee;color:#07111b;border:0;border-radius:8px;font-weight:bold;margin-top:12px}
-.link{color:#22d3ee;text-align:center;cursor:pointer;margin-top:18px}
-.msg{text-align:center;color:#22d3ee;font-size:13px;margin-top:15px}
-.hidden{display:none}
-.dashboard{max-width:900px;margin:30px auto;padding:20px}
-.panel-card{background:#101a2a;padding:22px;border-radius:12px;margin-top:15px}
-.logout{background:#e34b62;color:white}
+button,input,select{padding:12px;border-radius:8px;border:1px solid #30445e}
+button{background:#22d3ee;color:#07111b;font-weight:bold;cursor:pointer}
+input,select{background:#080d18;color:white;width:100%;margin:7px 0}
+.container{max-width:1000px;margin:30px auto;padding:15px}
+.card{background:#101a2a;border:1px solid #263c54;border-radius:12px;padding:20px;margin:15px 0}
+.hidden{display:none!important}
+nav{display:flex;gap:8px;flex-wrap:wrap;margin:20px 0}
+nav button{flex:1;min-width:120px}
+.danger{background:#e34b62;color:white}
+.secondary{background:#263c54;color:white}
+.success{color:#22d3ee}
+.muted{color:#9caec4}
+.msg{color:#22d3ee;margin:15px 0;white-space:pre-wrap}
+table{width:100%;border-collapse:collapse;min-width:550px}
+th,td{text-align:left;padding:12px;border-bottom:1px solid #30445e}
+.tablewrap{overflow-x:auto}
+h2,h3{margin-top:0}
 </style>
 </head>
 <body>
 
-<div id="auth" class="container">
-<div class="logo">NOVA<span>HOST</span></div>
+<header>
+  <div class="logo">NOVA<span>HOST</span></div>
+  <button id="logoutBtn" class="danger hidden">Déconnexion</button>
+</header>
 
-<div class="card" id="login">
-<h2>Connexion client</h2>
-<form id="loginForm">
-<input id="loginEmail" type="email" placeholder="Adresse email" required>
-<input id="loginPassword" type="password" placeholder="Mot de passe" required>
-<button type="submit">Se connecter</button>
-</form>
-<div class="link" onclick="showRegister()">Créer un compte</div>
-</div>
+<div class="container">
 
-<div class="card hidden" id="register">
-<h2>Créer un compte</h2>
-<form id="registerForm">
-<input id="username" type="text" placeholder="Nom d'utilisateur" required>
-<input id="registerEmail" type="email" placeholder="Adresse email" required>
-<input id="registerPassword" type="password" placeholder="Mot de passe (8 caractères minimum)" minlength="8" required>
-<button type="submit">S'inscrire</button>
-</form>
-<div class="link" onclick="showLogin()">Déjà un compte ? Connexion</div>
-</div>
+<section id="auth">
+  <div class="card">
+    <h2>Connexion NovaHost</h2>
+    <form id="loginForm">
+      <input id="loginEmail" type="email" placeholder="Adresse email" required>
+      <input id="loginPassword" type="password" placeholder="Mot de passe" required>
+      <button type="submit">Se connecter</button>
+    </form>
+    <p class="muted">Pas encore de compte ?</p>
+    <button id="showRegister" class="secondary">Créer un compte</button>
+  </div>
+
+  <div class="card hidden" id="registerCard">
+    <h2>Créer un compte</h2>
+    <form id="registerForm">
+      <input id="username" placeholder="Nom d'utilisateur" required>
+      <input id="registerEmail" type="email" placeholder="Email" required>
+      <input id="registerPassword" type="password" minlength="8" placeholder="Mot de passe (8 caractères minimum)" required>
+      <button type="submit">S'inscrire</button>
+    </form>
+    <button id="showLogin" class="secondary">Retour connexion</button>
+  </div>
+</section>
+
+<section id="clientPanel" class="hidden">
+  <h2>Espace client</h2>
+  <p class="muted" id="clientEmail"></p>
+
+  <nav>
+    <button data-page="clientHome">Accueil</button>
+    <button data-page="clientOrders">Mes commandes</button>
+    <button data-page="clientNew">Commander</button>
+    <button data-page="clientProfile">Mon compte</button>
+  </nav>
+
+  <div id="clientHome" class="page card">
+    <h3>Bienvenue sur NovaHost !</h3>
+    <p>Retrouve ici tes hébergements et tes commandes.</p>
+  </div>
+
+  <div id="clientOrders" class="page card hidden">
+    <h3>Mes commandes</h3>
+    <div id="myOrders">Chargement...</div>
+  </div>
+
+  <div id="clientNew" class="page card hidden">
+    <h3>Commander un hébergement</h3>
+    <p class="muted">Choisis le jeu et ton offre.</p>
+    <form id="orderForm">
+      <label>Jeu</label>
+      <select id="game">
+        <option>Minecraft</option>
+        <option>FiveM</option>
+        <option>Palworld</option>
+        <option>Rust</option>
+        <option>ARK</option>
+        <option>Garrys Mod</option>
+      </select>
+      <label>Offre souhaitée</label>
+      <select id="plan">
+        <option>À définir avec NovaHost</option>
+        <option>Starter</option>
+        <option>Standard</option>
+        <option>Premium</option>
+      </select>
+      <button type="submit">Envoyer ma demande</button>
+    </form>
+  </div>
+
+  <div id="clientProfile" class="page card hidden">
+    <h3>Mon compte</h3>
+    <p id="profileInfo"></p>
+  </div>
+</section>
+
+<section id="adminPanel" class="hidden">
+  <h2>Administration NovaHost</h2>
+  <p class="success">Accès administrateur confirmé</p>
+
+  <nav>
+    <button data-page="adminHome">Vue générale</button>
+    <button data-page="adminOrders">Commandes</button>
+    <button data-page="adminClients">Clients</button>
+  </nav>
+
+  <div id="adminHome" class="page card">
+    <h3>Tableau de bord</h3>
+    <p>Commandes : <strong id="orderCount">0</strong></p>
+    <p>Clients : <strong id="clientCount">0</strong></p>
+    <button id="refreshAdmin">Actualiser</button>
+  </div>
+
+  <div id="adminOrders" class="page card hidden">
+    <h3>Gestion des commandes</h3>
+    <div id="allOrders">Chargement...</div>
+  </div>
+
+  <div id="adminClients" class="page card hidden">
+    <h3>Clients enregistrés</h3>
+    <div id="allClients">Chargement...</div>
+  </div>
+</section>
+
 <div id="message" class="msg"></div>
 </div>
 
-<div id="dashboard" class="dashboard hidden">
-<div class="logo">NOVA<span>HOST</span></div>
-<div class="panel-card">
-<h2>Bienvenue sur NovaHost !</h2>
-<p>Connecté en tant que :</p>
-<strong id="userEmail"></strong>
-</div>
-<div class="panel-card">
-<h3>Mes serveurs</h3>
-<p>Aucun serveur pour le moment.</p>
-</div>
-<div class="panel-card">
-<h3>Mon compte</h3>
-<p id="profileName"></p>
-<button class="logout" onclick="logout()">Se déconnecter</button>
-</div>
-</div>
-
 <script>
-const SUPABASE_URL = "https://basynpfbmginduprjtwe.supabase.co";
-const SUPABASE_KEY = "sb_publishable_MEHlD2PSVJDCzkbkDNTRwQ_S3EoRnEZ";
+const SUPABASE_URL="https://basynpfbmginduprjtwe.supabase.co";
+const SUPABASE_KEY="sb_publishable_MEHlD2PSVJDCzkbkDNTRwQ_S3EoRnEZ";
+const client=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
-const client = supabase.createClient(
-SUPABASE_URL,
-SUPABASE_KEY
-);
+let currentUser=null;
+let isAdmin=false;
 
-const auth = document.getElementById("auth");
-const dashboard = document.getElementById("dashboard");
-const message = document.getElementById("message");
+const $=id=>document.getElementById(id);
+const message=$("message");
 
-function showRegister(){
-document.getElementById("login").classList.add("hidden");
-document.getElementById("register").classList.remove("hidden");
-message.textContent="";
+function say(text){message.textContent=text}
+function show(id){$(id).classList.remove("hidden")}
+function hide(id){$(id).classList.add("hidden")}
+
+function escapeHTML(value){
+ return String(value??"").replace(/[&<>"']/g,c=>({
+  "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+ }[c]));
 }
 
-function showLogin(){
-document.getElementById("register").classList.add("hidden");
-document.getElementById("login").classList.remove("hidden");
-message.textContent="";
+function openPage(page){
+ document.querySelectorAll(".page").forEach(p=>p.classList.add("hidden"));
+ show(page);
 }
 
-function showDashboard(user){
-auth.classList.add("hidden");
-dashboard.classList.remove("hidden");
-document.getElementById("userEmail").textContent=user.email;
-document.getElementById("profileName").textContent=
-"Compte : "+(user.user_metadata.username || "Client");
-}
-
-document.getElementById("registerForm").addEventListener("submit",async e=>{
-e.preventDefault();
-message.textContent="Création du compte...";
-const username=document.getElementById("username").value.trim();
-const email=document.getElementById("registerEmail").value;
-const password=document.getElementById("registerPassword").value;
-
-const {data,error}=await client.auth.signUp({
-email,password,
-options:{data:{username}}
+document.querySelectorAll("[data-page]").forEach(btn=>{
+ btn.addEventListener("click",()=>{
+  openPage(btn.dataset.page);
+  if(btn.dataset.page==="clientOrders")loadMyOrders();
+  if(btn.dataset.page==="adminOrders")loadAdminOrders();
+  if(btn.dataset.page==="adminClients")loadClients();
+ });
 });
 
-if(error){
-message.textContent=error.message;
-return;
+$("showRegister").onclick=()=>{hide("loginForm");show("registerCard")};
+$("showLogin").onclick=()=>{show("loginForm");hide("registerCard")};
+
+async function enterApp(user){
+ currentUser=user;
+ hide("auth");
+ show("logoutBtn");
+ $("clientEmail").textContent=user.email||"";
+ $("profileInfo").textContent="Adresse : "+(user.email||"");
+
+ const {data:adminData,error:adminError}=await client
+  .from("admin_users")
+  .select("user_id")
+  .eq("user_id",user.id)
+  .maybeSingle();
+
+ if(adminError){
+  say("Erreur de vérification du rôle : "+adminError.message);
+  return;
+ }
+
+ isAdmin=!!adminData;
+
+ if(isAdmin){
+  show("adminPanel");
+  hide("clientPanel");
+  openPage("adminHome");
+  await loadAdminStats();
+ }else{
+  show("clientPanel");
+  hide("adminPanel");
+  openPage("clientHome");
+ }
 }
 
-if(data.session){
-showDashboard(data.user);
-}else{
-message.textContent="Inscription réussie ! Vérifie tes emails pour confirmer ton compte.";
-}
+$("registerForm").addEventListener("submit",async e=>{
+ e.preventDefault();
+ say("Création du compte...");
+ const username=$("username").value.trim();
+ const email=$("registerEmail").value.trim();
+ const password=$("registerPassword").value;
+
+ try{
+  const {data,error}=await client.auth.signUp({
+   email,password,options:{data:{username}}
+  });
+  if(error)throw error;
+  if(data.session)await enterApp(data.user);
+  else say("Compte créé ! Confirme ton adresse email avant de te connecter.");
+ }catch(err){say("Erreur : "+err.message)}
 });
 
-document.getElementById("loginForm").addEventListener("submit",async e=>{
-e.preventDefault();
-message.textContent="Connexion...";
-const email=document.getElementById("loginEmail").value;
-const password=document.getElementById("loginPassword").value;
-
-const {data,error}=await client.auth.signInWithPassword({
-email,password
+$("loginForm").addEventListener("submit",async e=>{
+ e.preventDefault();
+ say("Connexion...");
+ try{
+  const {data,error}=await client.auth.signInWithPassword({
+   email:$("loginEmail").value.trim(),
+   password:$("loginPassword").value
+  });
+  if(error)throw error;
+  await enterApp(data.user);
+  say("");
+ }catch(err){say("Erreur : "+err.message)}
 });
 
-if(error){
-message.textContent="Erreur : "+error.message;
-return;
-}
-showDashboard(data.user);
+$("logoutBtn").onclick=async()=>{
+ await client.auth.signOut();
+ currentUser=null;
+ isAdmin=false;
+ hide("clientPanel");
+ hide("adminPanel");
+ hide("logoutBtn");
+ show("auth");
+ show("loginForm");
+ hide("registerCard");
+ say("Déconnexion réussie.");
+};
+
+$("orderForm").addEventListener("submit",async e=>{
+ e.preventDefault();
+ if(!currentUser)return;
+ say("Envoi de la demande...");
+ const {error}=await client.from("orders").insert({
+  user_id:currentUser.id,
+  game:$("game").value,
+  plan:$("plan").value,
+  status:"pending",
+  price:0
+ });
+ if(error){say("Erreur : "+error.message);return}
+ say("Demande envoyée à NovaHost !");
+ await loadMyOrders();
+ openPage("clientOrders");
 });
 
-async function logout(){
-await client.auth.signOut();
-dashboard.classList.add("hidden");
-auth.classList.remove("hidden");
-showLogin();
+async function loadMyOrders(){
+ $("myOrders").textContent="Chargement...";
+ const {data,error}=await client.from("orders")
+  .select("*").order("created_at",{ascending:false});
+ if(error){$("myOrders").textContent=error.message;return}
+ if(!data.length){$("myOrders").textContent="Aucune commande.";return}
+ $("myOrders").innerHTML=data.map(o=>`
+  <div class="card">
+   <strong>${escapeHTML(o.game)}</strong>
+   <p>Offre : ${escapeHTML(o.plan)}</p>
+   <p>Statut : ${escapeHTML(o.status)}</p>
+   <p>Prix : ${Number(o.price).toFixed(2)} €</p>
+  </div>`).join("");
 }
+
+async function loadAdminStats(){
+ const [orders,profiles]=await Promise.all([
+  client.from("orders").select("id",{count:"exact",head:true}),
+  client.from("profiles").select("id",{count:"exact",head:true})
+ ]);
+ $("orderCount").textContent=orders.count??"—";
+ $("clientCount").textContent=profiles.count??"—";
+ if(orders.error)say("Commandes : "+orders.error.message);
+ if(profiles.error)say("Profils : "+profiles.error.message);
+}
+
+async function loadAdminOrders(){
+ $("allOrders").textContent="Chargement...";
+ const {data,error}=await client.from("orders")
+  .select("*").order("created_at",{ascending:false});
+ if(error){$("allOrders").textContent=error.message;return}
+ if(!data.length){$("allOrders").textContent="Aucune commande.";return}
+ $("allOrders").innerHTML=`
+ <div class="tablewrap"><table>
+ <thead><tr><th>Jeu</th><th>Offre</th><th>Client ID</th><th>Statut</th><th>Action</th></tr></thead>
+ <tbody>${data.map(o=>`
+ <tr>
+ <td>${escapeHTML(o.game)}</td>
+ <td>${escapeHTML(o.plan)}</td>
+ <td>${escapeHTML(o.user_id.slice(0,8))}...</td>
+ <td>${escapeHTML(o.status)}</td>
+ <td>
+ <select id="status-${escapeHTML(o.id)}">
+ <option value="pending" ${o.status==="pending"?"selected":""}>En attente</option>
+ <option value="approved" ${o.status==="approved"?"selected":""}>Acceptée</option>
+ <option value="active" ${o.status==="active"?"selected":""}>Active</option>
+ <option value="cancelled" ${o.status==="cancelled"?"selected":""}>Refusée</option>
+ </select>
+ <button onclick="updateOrder('${escapeHTML(o.id)}')">Enregistrer</button>
+ </td></tr>`).join("")}</tbody></table></div>`;
+}
+
+async function updateOrder(id){
+ const status=$("status-"+id).value;
+ const {error}=await client.from("orders").update({status}).eq("id",id);
+ if(error){say("Erreur : "+error.message);return}
+ say("Commande mise à jour.");
+ await loadAdminOrders();
+ await loadAdminStats();
+}
+
+async function loadClients(){
+ $("allClients").textContent="Chargement...";
+ const {data,error}=await client.from("profiles").select("*");
+ if(error){$("allClients").textContent=error.message;return}
+ if(!data.length){$("allClients").textContent="Aucun client.";return}
+ $("allClients").innerHTML=data.map(p=>`
+ <div class="card">
+ <strong>${escapeHTML(p.username||"Client")}</strong>
+ <p class="muted">Identifiant : ${escapeHTML(p.id||"")}</p>
+ </div>`).join("");
+}
+
+$("refreshAdmin").onclick=async()=>{
+ await loadAdminStats();
+ say("Données actualisées.");
+};
 
 async function init(){
-const {data:{session}}=await client.auth.getSession();
-if(session)showDashboard(session.user);
+ const {data,error}=await client.auth.getSession();
+ if(error){say(error.message);return}
+ if(data.session)await enterApp(data.session.user);
 }
-
-client.auth.onAuthStateChange((event,session)=>{
-if(session && event==="SIGNED_IN"){
-showDashboard(session.user);
-}
-});
 
 init();
 </script>
 </body>
 </html>
+
