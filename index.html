@@ -9,7 +9,7 @@
 <style>
 *{box-sizing:border-box}
 body{margin:0;background:#080d18;color:#fff;font-family:Arial,sans-serif}
-header{padding:20px;background:#101a2a;border-bottom:1px solid #263c54;display:flex;justify-content:space-between;align-items:center;gap:10px}
+header{padding:20px;background:#101a2a;border-bottom:1px solid #263c54;display:flex;justify-content:space-between;align-items:center}
 .logo{font-size:25px;font-weight:900;color:#22d3ee}
 .logo span{color:white}
 button,input,select{padding:12px;border-radius:8px;border:1px solid #30445e}
@@ -19,13 +19,13 @@ input,select{background:#080d18;color:white;width:100%;margin:7px 0}
 .card{background:#101a2a;border:1px solid #263c54;border-radius:12px;padding:20px;margin:15px 0}
 .hidden{display:none!important}
 nav{display:flex;gap:8px;flex-wrap:wrap;margin:20px 0}
-nav button{flex:1;min-width:120px}
+nav button{flex:1;min-width:110px}
 .danger{background:#e34b62;color:white}
 .secondary{background:#263c54;color:white}
 .success{color:#22d3ee}
 .muted{color:#9caec4}
 .msg{color:#22d3ee;margin:15px 0;white-space:pre-wrap}
-table{width:100%;border-collapse:collapse;min-width:550px}
+table{width:100%;border-collapse:collapse;min-width:650px}
 th,td{text-align:left;padding:12px;border-bottom:1px solid #30445e}
 .tablewrap{overflow-x:auto}
 h2,h3{margin-top:0}
@@ -34,113 +34,111 @@ h2,h3{margin-top:0}
 <body>
 
 <header>
-  <div class="logo">NOVA<span>HOST</span></div>
-  <button id="logoutBtn" class="danger hidden">Déconnexion</button>
+ <div class="logo">NOVA<span>HOST</span></div>
+ <button id="logoutBtn" class="danger hidden">Déconnexion</button>
 </header>
 
 <div class="container">
 
 <section id="auth">
-  <div class="card">
-    <h2>Connexion NovaHost</h2>
-    <form id="loginForm">
-      <input id="loginEmail" type="email" placeholder="Adresse email" required>
-      <input id="loginPassword" type="password" placeholder="Mot de passe" required>
-      <button type="submit">Se connecter</button>
-    </form>
-    <p class="muted">Pas encore de compte ?</p>
-    <button id="showRegister" class="secondary">Créer un compte</button>
-  </div>
+ <div class="card">
+  <h2>Connexion NovaHost</h2>
+  <form id="loginForm">
+   <input id="loginEmail" type="email" placeholder="Adresse email" required>
+   <input id="loginPassword" type="password" placeholder="Mot de passe" required>
+   <button type="submit">Se connecter</button>
+  </form>
+  <p class="muted">Pas encore de compte ?</p>
+  <button id="showRegister" class="secondary">Créer un compte</button>
+ </div>
 
-  <div class="card hidden" id="registerCard">
-    <h2>Créer un compte</h2>
-    <form id="registerForm">
-      <input id="username" placeholder="Nom d'utilisateur" required>
-      <input id="registerEmail" type="email" placeholder="Email" required>
-      <input id="registerPassword" type="password" minlength="8" placeholder="Mot de passe (8 caractères minimum)" required>
-      <button type="submit">S'inscrire</button>
-    </form>
-    <button id="showLogin" class="secondary">Retour connexion</button>
-  </div>
+ <div class="card hidden" id="registerCard">
+  <h2>Créer un compte</h2>
+  <form id="registerForm">
+   <input id="username" placeholder="Nom d'utilisateur" required>
+   <input id="registerEmail" type="email" placeholder="Email" required>
+   <input id="registerPassword" type="password" minlength="8" placeholder="Mot de passe (8 caractères minimum)" required>
+   <button type="submit">S'inscrire</button>
+  </form>
+  <button id="showLogin" class="secondary">Retour connexion</button>
+ </div>
 </section>
 
 <section id="clientPanel" class="hidden">
-  <h2>Espace client</h2>
-  <p class="muted" id="clientEmail"></p>
+ <h2>Espace client</h2>
+ <p class="muted" id="clientEmail"></p>
+ <nav>
+  <button data-page="clientHome">Accueil</button>
+  <button data-page="clientOrders">Mes commandes</button>
+  <button data-page="clientNew">Commander</button>
+  <button data-page="clientProfile">Mon compte</button>
+ </nav>
 
-  <nav>
-    <button data-page="clientHome">Accueil</button>
-    <button data-page="clientOrders">Mes commandes</button>
-    <button data-page="clientNew">Commander</button>
-    <button data-page="clientProfile">Mon compte</button>
-  </nav>
+ <div id="clientHome" class="page card">
+  <h3>Bienvenue sur NovaHost !</h3>
+  <p>Retrouve ici tes hébergements et tes commandes.</p>
+ </div>
 
-  <div id="clientHome" class="page card">
-    <h3>Bienvenue sur NovaHost !</h3>
-    <p>Retrouve ici tes hébergements et tes commandes.</p>
-  </div>
+ <div id="clientOrders" class="page card hidden">
+  <h3>Mes commandes</h3>
+  <div id="myOrders">Chargement...</div>
+ </div>
 
-  <div id="clientOrders" class="page card hidden">
-    <h3>Mes commandes</h3>
-    <div id="myOrders">Chargement...</div>
-  </div>
+ <div id="clientNew" class="page card hidden">
+  <h3>Commander un hébergement</h3>
+  <p class="muted">Choisis ton jeu et ton offre souhaitée.</p>
+  <form id="orderForm">
+   <label>Jeu</label>
+   <select id="game">
+    <option>Minecraft</option>
+    <option>FiveM</option>
+    <option>Palworld</option>
+    <option>Rust</option>
+    <option>ARK</option>
+    <option>Garrys Mod</option>
+   </select>
+   <label>Offre souhaitée</label>
+   <select id="plan">
+    <option>À définir avec NovaHost</option>
+    <option>Starter</option>
+    <option>Standard</option>
+    <option>Premium</option>
+   </select>
+   <button type="submit">Envoyer ma demande</button>
+  </form>
+ </div>
 
-  <div id="clientNew" class="page card hidden">
-    <h3>Commander un hébergement</h3>
-    <p class="muted">Choisis le jeu et ton offre.</p>
-    <form id="orderForm">
-      <label>Jeu</label>
-      <select id="game">
-        <option>Minecraft</option>
-        <option>FiveM</option>
-        <option>Palworld</option>
-        <option>Rust</option>
-        <option>ARK</option>
-        <option>Garrys Mod</option>
-      </select>
-      <label>Offre souhaitée</label>
-      <select id="plan">
-        <option>À définir avec NovaHost</option>
-        <option>Starter</option>
-        <option>Standard</option>
-        <option>Premium</option>
-      </select>
-      <button type="submit">Envoyer ma demande</button>
-    </form>
-  </div>
-
-  <div id="clientProfile" class="page card hidden">
-    <h3>Mon compte</h3>
-    <p id="profileInfo"></p>
-  </div>
+ <div id="clientProfile" class="page card hidden">
+  <h3>Mon compte</h3>
+  <p id="profileInfo"></p>
+ </div>
 </section>
 
 <section id="adminPanel" class="hidden">
-  <h2>Administration NovaHost</h2>
-  <p class="success">Accès administrateur confirmé</p>
+ <h2>Administration NovaHost</h2>
+ <p class="success">Accès administrateur confirmé</p>
+ <nav>
+  <button data-page="adminHome">Vue générale</button>
+  <button data-page="adminOrders">Commandes</button>
+  <button data-page="adminClients">Clients</button>
+ </nav>
 
-  <nav>
-    <button data-page="adminHome">Vue générale</button>
-    <button data-page="adminOrders">Commandes</button>
-    <button data-page="adminClients">Clients</button>
-  </nav>
+ <div id="adminHome" class="page card">
+  <h3>Tableau de bord</h3>
+  <p>Commandes : <strong id="orderCount">0</strong></p>
+  <p>Clients : <strong id="clientCount">0</strong></p>
+  <button id="refreshAdmin">Actualiser</button>
+ </div>
 
-  <div id="adminHome" class="page card">
-    <h3>Tableau de bord</h3>
-    <p>Commandes : <strong id="orderCount">0</strong></p>
-    <p>Clients : <strong id="clientCount">0</strong></p>
-    <button id="refreshAdmin">Actualiser</button>
-  </div>
+ <div id="adminOrders" class="page card hidden">
+  <h3>Gestion des commandes</h3>
+  <div id="allOrders">Chargement...</div>
+ </div>
 
-  <div id="adminOrders" class="page card hidden">
-    <h3>Gestion des commandes</h3>
-    <div id="allOrders">Chargement...</div>
-  </div>
-
-  <div id="adminClients" class="page card hidden">
-    <h3>Clients enregistrés</h3>
-    <div id="allClients">Chargement...</div>
-  </div>
+ <div id="adminClients" class="page card hidden">
+  <h3>Clients enregistrés</h3>
+  <div id="allClients">Chargement...</div>
+ </div>
 </section>
 
 <div id="message" class="msg"></div>
@@ -174,10 +172,11 @@ function openPage(page){
 
 document.querySelectorAll("[data-page]").forEach(btn=>{
  btn.addEventListener("click",()=>{
-  openPage(btn.dataset.page);
-  if(btn.dataset.page==="clientOrders")loadMyOrders();
-  if(btn.dataset.page==="adminOrders")loadAdminOrders();
-  if(btn.dataset.page==="adminClients")loadClients();
+  const page=btn.dataset.page;
+  openPage(page);
+  if(page==="clientOrders")loadMyOrders();
+  if(page==="adminOrders")loadAdminOrders();
+  if(page==="adminClients")loadClients();
  });
 });
 
@@ -191,18 +190,19 @@ async function enterApp(user){
  $("clientEmail").textContent=user.email||"";
  $("profileInfo").textContent="Adresse : "+(user.email||"");
 
- const {data:adminData,error:adminError}=await client
+ const {data,error}=await client
   .from("admin_users")
   .select("user_id")
   .eq("user_id",user.id)
   .maybeSingle();
 
- if(adminError){
-  say("Erreur de vérification du rôle : "+adminError.message);
+ if(error){
+  say("Erreur de vérification administrateur : "+error.message);
+  show("clientPanel");
   return;
  }
 
- isAdmin=!!adminData;
+ isAdmin=!!data;
 
  if(isAdmin){
   show("adminPanel");
@@ -309,6 +309,7 @@ async function loadAdminOrders(){
   .select("*").order("created_at",{ascending:false});
  if(error){$("allOrders").textContent=error.message;return}
  if(!data.length){$("allOrders").textContent="Aucune commande.";return}
+
  $("allOrders").innerHTML=`
  <div class="tablewrap"><table>
  <thead><tr><th>Jeu</th><th>Offre</th><th>Client ID</th><th>Statut</th><th>Action</th></tr></thead>
@@ -365,4 +366,3 @@ init();
 </script>
 </body>
 </html>
-
